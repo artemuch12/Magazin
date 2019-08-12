@@ -29,15 +29,15 @@ void *client(void *ptr)
 }
 void *loader()
 {
-	pthread_exit(0);
+	int num_mag;
+	srand(time(NULL));
 	while (1)
 	{
-		int num_mag;
-		srand(time(NULL));
 		num_mag = rand() % 5;
 		magazin[num_mag] = 500 + magazin[num_mag];
 		printf("The loader replenished the store number %d of goods for 500 pcs. The volume of goods in the store number %d is: %d pcs.\n", num_mag, num_mag, magazin[num_mag]);
 		sleep(2);
+<<<<<<< HEAD
 	}
 }
 void error_tid(int err_tid)
@@ -46,6 +46,8 @@ void error_tid(int err_tid)
 	{
 		printf("Error %d", err_tid);
 		exit(err_tid);
+=======
+>>>>>>> 2ff73c0c3eadfce6524353c7cc5ae3416847c6af
 	}
 }
 
