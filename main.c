@@ -22,7 +22,7 @@ void *client(void *ptr)
 		needs[*i] = needs[*i] - magazin[num_mag];
 		magazin[num_mag] = 0;
 		printf("Buyer number %d bought everything at store %d. Buyer's needs number %d are: %d.\n", *i, num_mag, *i, needs[*i]);
-		sleep(2);
+		sleep(3);
 	}
 	printf("The buyer has the %d over needs.\n", *i);
 	pthread_exit(0);
@@ -37,9 +37,20 @@ void *loader()
 		num_mag = rand() % 5;
 		magazin[num_mag] = 500 + magazin[num_mag];
 		printf("The loader replenished the store number %d of goods for 500 pcs. The volume of goods in the store number %d is: %d pcs.\n", num_mag, num_mag, magazin[num_mag]);
-		sleep(1);
+		sleep(2);
 	}
 }
+void error_tid(int err_tid)
+{
+	if(err_tid != 0)
+	{
+		printf("Error %d", err_tid);
+		exit(err_tid);
+	}
+}
+
+
+
 int main()
 {
 	void **status;
@@ -63,25 +74,27 @@ int main()
 		max_rand = -1000 + rand() % 2001;
 		needs[i] = needs[i] + max_rand;
 	}
-	for (i = 0; i < 3; i++)
-	{
-		pthread_mutex_lock(&mut);
-		pthread_create(&tid_client[i], NULL, client, &i);
-		puts("Create flow");
-		pthread_mutex_unlock(&mut);
-	}
-	pthread_create(&tid_loader, NULL, loader, NULL);
+	err_tid = pthread_create(&tid_loader, NULL, loader, NULL);
+	error_tid(err_tid);
 	puts("Create flow");
 	for (i = 0; i < 3; i++)
 	{
-		pthread_join(tid_client[i], status);
+		pthread_mutex_lock(&mut);
+		err_tid = pthread_create(&tid_client[i], NULL, client, &i);
+		error_tid(err_tid);
+		puts("Create flow");
+		pthread_mutex_unlock(&mut);
 	}
-	printf("Buyers ran out of needs.\n");
-	err_tid = pthread_cancel(tid_loader);
-	if(err_tid != 0)
+	
+	
+	for(i = 0; i < 3; i++)
 	{
-		printf("Error %d", err_tid);
-		exit(err_tid);
+		err_tid = pthread_join(tid_client[i], status);
 	}
+	err_tid = pthread_cancel(tid_loader);
+	error_tid(err_tid);
+	printf("Buyers ran out of needs.\n");
+	
+	
 	exit(0);
 }
