@@ -22,22 +22,21 @@ void *client(void *ptr)
 		needs[*i] = needs[*i] - magazin[num_mag];
 		magazin[num_mag] = 0;
 		printf("Buyer number %d bought everything at store %d. Buyer's needs number %d are: %d.\n", *i, num_mag, *i, needs[*i]);
-		sleep(2);
+		sleep(3);
 	}
 	printf("The buyer has the %d over needs.\n", *i);
 	pthread_exit(0);
 }
 void *loader()
 {
-	pthread_exit(0);
+	int num_mag;
+	srand(time(NULL));
 	while (1)
 	{
-		int num_mag;
-		srand(time(NULL));
 		num_mag = rand() % 5;
 		magazin[num_mag] = 500 + magazin[num_mag];
 		printf("The loader replenished the store number %d of goods for 500 pcs. The volume of goods in the store number %d is: %d pcs.\n", num_mag, num_mag, magazin[num_mag]);
-		sleep(1);
+		sleep(2);
 	}
 }
 int main()
