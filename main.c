@@ -73,7 +73,7 @@ int main()
 	puts("Create flow");
 	for (i = 0; i < 3; i++)
 	{
-		pthread_join(tid_client[i], status);
+		err_tid = pthread_join(tid_client[i], status);
 	}
 	printf("Buyers ran out of needs.\n");
 	err_tid = pthread_cancel(tid_loader);
