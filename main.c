@@ -9,7 +9,6 @@ pthread_t tid_loader;
 int magazin[5] = {1000, 1000, 1000, 1000, 1000};
 int needs[3] = {10000, 10000, 10000};
 
-
 void *client(void *ptr)
 {
 	int num_mag;
@@ -37,7 +36,7 @@ void *loader()
 		magazin[num_mag] = 500 + magazin[num_mag];
 		printf("The loader replenished the store number %d of goods for 500 pcs. The volume of goods in the store number %d is: %d pcs.\n", num_mag, num_mag, magazin[num_mag]);
 		sleep(2);
-<<<<<<< HEAD
+
 	}
 }
 void error_tid(int err_tid)
@@ -46,8 +45,6 @@ void error_tid(int err_tid)
 	{
 		printf("Error %d", err_tid);
 		exit(err_tid);
-=======
->>>>>>> 2ff73c0c3eadfce6524353c7cc5ae3416847c6af
 	}
 }
 
@@ -55,8 +52,9 @@ void error_tid(int err_tid)
 
 int main()
 {
-	void **status;
+	int **status;
 	int max_rand;
+	int j[3] = {0, 1, 2};
 	int i = 0;
 	int err_tid;
 
@@ -78,20 +76,18 @@ int main()
 	}
 	err_tid = pthread_create(&tid_loader, NULL, loader, NULL);
 	error_tid(err_tid);
-	puts("Create flow");
-	for (i = 0; i < 3; i++)
-	{
-		pthread_mutex_lock(&mut);
-		err_tid = pthread_create(&tid_client[i], NULL, client, &i);
-		error_tid(err_tid);
-		puts("Create flow");
-		pthread_mutex_unlock(&mut);
-	}
+	
+	err_tid = pthread_create(&tid_client[0], NULL, client, &j);
+	error_tid(err_tid);
+	err_tid = pthread_create(&tid_client[1], NULL, client, &j[1]);
+	error_tid(err_tid);
+	err_tid = pthread_create(&tid_client[2], NULL, client, &j[2]);
+	error_tid(err_tid);
 	
 	
 	for(i = 0; i < 3; i++)
 	{
-		err_tid = pthread_join(tid_client[i], status);
+		err_tid = pthread_join(tid_client[i], NULL);
 	}
 	err_tid = pthread_cancel(tid_loader);
 	error_tid(err_tid);
