@@ -91,6 +91,7 @@ int main()
 	}
 	err_tid = pthread_cancel(tid_loader);
 	error_tid(err_tid);
+	pthread_join(tid_loader, NULL);
 	printf("Buyers ran out of needs.\n");
 	
 	
